@@ -199,30 +199,6 @@ class TestClipboard(unittest.TestCase):
             result, _ = self.copy({}, {"clip.exe"}, platform="win32")
         self.assertEqual(result, (True, "clip.exe"))
 
-    @unittest.skipUnless(sys.platform == "win32", "needs the Windows clipboard")
-    def test_native_windows_clipboard_roundtrip(self):
-        import ctypes
-        from ctypes import wintypes
-        text = "héllo ✓ 東京"
-        self.assertTrue(tempmail._win32_set_clipboard(text))
-
-        user32, kernel32 = ctypes.WinDLL("user32"), ctypes.WinDLL("kernel32")
-        user32.GetClipboardData.argtypes = [wintypes.UINT]
-        user32.GetClipboardData.restype = wintypes.HANDLE
-        kernel32.GlobalLock.argtypes = [wintypes.HGLOBAL]
-        kernel32.GlobalLock.restype = wintypes.LPVOID
-        kernel32.GlobalUnlock.argtypes = [wintypes.HGLOBAL]
-        self.assertTrue(user32.OpenClipboard(None))
-        try:
-            handle = user32.GetClipboardData(13)  # CF_UNICODETEXT
-            ptr = kernel32.GlobalLock(handle)
-            try:
-                self.assertEqual(ctypes.wstring_at(ptr), text)
-            finally:
-                kernel32.GlobalUnlock(handle)
-        finally:
-            user32.CloseClipboard()
-
 
 class TestNotification(unittest.TestCase):
     def test_macos_text_passed_as_arguments(self):

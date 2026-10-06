@@ -151,6 +151,7 @@ git clone https://github.com/omsingh02/tempmail-watcher.git
 cd tempmail-watcher
 python -m pip install pytest
 python -m pytest              # tests mock the network, clipboard and browser
+TEMPMAIL_INTEGRATION=1 python -m pytest tests/test_integration.py   # real clipboard and notifications (overwrites your clipboard)
 pipx run ruff check .         # lint
 ```
 

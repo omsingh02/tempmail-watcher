@@ -264,19 +264,27 @@ $appId = '{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\WindowsPowerShell\v1.0\powershe
 """
 
 
-def _windows_toast(title: str, message: str) -> bool:
+def _windows_toast_command(title: str, message: str) -> Optional[Tuple[List[str], Dict[str, str]]]:
+    """PowerShell command line and environment that show a Windows toast, or None without PowerShell."""
     exe = shutil.which("powershell.exe")
     if not exe:
-        return False
+        return None
     env = dict(os.environ, TEMPMAIL_TITLE=title, TEMPMAIL_MESSAGE=message)
     if sys.platform != "win32":
         # WSL only forwards variables listed in WSLENV to Windows processes
         env["WSLENV"] = ":".join(filter(None, [os.environ.get("WSLENV"), "TEMPMAIL_TITLE", "TEMPMAIL_MESSAGE"]))
     encoded = base64.b64encode(_WINDOWS_TOAST_SCRIPT.encode("utf-16-le")).decode("ascii")
+    return [exe, "-NoProfile", "-NonInteractive", "-EncodedCommand", encoded], env
+
+
+def _windows_toast(title: str, message: str) -> bool:
+    command = _windows_toast_command(title, message)
+    if not command:
+        return False
+    argv, env = command
     # Fire and forget: PowerShell takes about a second to start
     subprocess.Popen(
-        [exe, "-NoProfile", "-NonInteractive", "-EncodedCommand", encoded],
-        env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        argv, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0) if sys.platform == "win32" else 0
     )
     return True
@@ -291,27 +299,28 @@ def send_notification(title: str, message: str, urgency: str = "normal") -> bool
             return False
     if shutil.which("notify-send"):
         try:
-            subprocess.run(
+            result = subprocess.run(
                 ["notify-send", "-a", "TempMail", "-i", "mail-message-new", "-u", urgency, title, message],
                 check=False,
                 stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL
+                stderr=subprocess.DEVNULL,
+                timeout=10
             )
-            return True
+            return result.returncode == 0
         except Exception:
             pass
     elif sys.platform == "darwin" and shutil.which("osascript"):
         try:
             # Pass text as arguments, never inside the script: senders and subjects are untrusted
-            subprocess.run(
+            result = subprocess.run(
                 ["osascript",
                  "-e", "on run argv",
                  "-e", "display notification (item 1 of argv) with title (item 2 of argv)",
                  "-e", "end run",
                  message, title],
-                check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=10
             )
-            return True
+            return result.returncode == 0
         except Exception:
             pass
     return False
