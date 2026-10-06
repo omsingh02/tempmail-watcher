@@ -30,6 +30,14 @@ You can run the tool straight from the checkout with `python tempmail.py`, or in
 3. Make sure `python -m pytest` and `ruff check .` pass.
 4. Open a pull request describing what changed and why.
 
+## Releasing (maintainers)
+
+1. Bump `VERSION` in `tempmail.py` and move the `Unreleased` notes in `CHANGELOG.md` under the new version.
+2. Merge that to `main` through a pull request.
+3. Publish a GitHub release tagged `vX.Y.Z` with the changelog notes, e.g. `gh release create vX.Y.Z --notes-file notes.md`.
+
+The Release workflow then builds the package from the tag, attaches it to the GitHub release, and publishes it to PyPI with trusted publishing. It fails if the tag doesn't match `VERSION`.
+
 ## Reporting bugs
 
 Use the [bug report form](https://github.com/omsingh02/tempmail-watcher/issues/new/choose). Please include your OS, Python version, `tempmail --version`, and the provider. Don't paste codes or links you still need.
