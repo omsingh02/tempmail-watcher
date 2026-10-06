@@ -1,6 +1,7 @@
 # tempmail-watcher
 
 [![CI](https://github.com/omsingh02/tempmail-watcher/actions/workflows/ci.yml/badge.svg)](https://github.com/omsingh02/tempmail-watcher/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/tempmail-watcher)](https://pypi.org/project/tempmail-watcher/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![Platforms](https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey)](#platform-support)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
@@ -36,14 +37,17 @@ Requires Python 3.10 or newer.
 With [pipx](https://pipx.pypa.io) (recommended):
 
 ```sh
-pipx install git+https://github.com/omsingh02/tempmail-watcher.git
+pipx install tempmail-watcher
 ```
 
 With [uv](https://docs.astral.sh/uv/):
 
 ```sh
-uv tool install git+https://github.com/omsingh02/tempmail-watcher.git
+uv tool install tempmail-watcher
 ```
+
+Or with pip: `python -m pip install tempmail-watcher`. To try the latest unreleased code, install from Git instead:
+`pipx install git+https://github.com/omsingh02/tempmail-watcher.git`.
 
 Or grab the single file and run it directly:
 
