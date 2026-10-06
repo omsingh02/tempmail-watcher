@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-10-06
+
+### Changed
+
+- Redesigned README with an animated demo, now also shown on PyPI.
+
 ### Fixed
 
 - The progress line said "1 checks".
@@ -52,5 +58,6 @@ First public release.
 
 - Initial version (not publicly released).
 
-[Unreleased]: https://github.com/omsingh02/tempmail-watcher/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/omsingh02/tempmail-watcher/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/omsingh02/tempmail-watcher/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/omsingh02/tempmail-watcher/releases/tag/v1.2.0
