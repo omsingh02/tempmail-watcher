@@ -6,6 +6,10 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+### Fixed
+
+- The progress line said "1 checks".
+
 ## [1.2.0] - 2026-10-06
 
 First public release.

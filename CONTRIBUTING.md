@@ -20,6 +20,7 @@ You can run the tool straight from the checkout with `python tempmail.py`, or in
 - **Treat email content as untrusted.** Anything from an email (sender, subject, body, links) must never reach a shell, a script, or the terminal without sanitizing.
 - **Add tests** for bug fixes and new behavior. Unit tests must not use the network, the real clipboard, or a browser; mock them like the existing tests do.
 - **Platform checks** against the real clipboard and notification systems live in `tests/test_integration.py`. They only run with `TEMPMAIL_INTEGRATION=1` (they overwrite your clipboard), and CI runs them on Linux X11 and Wayland, macOS, Windows and WSL.
+- **Regenerate the README demo** with `python .github/assets/demo.py` if you change the terminal UI. It needs Chromium, ImageMagick and gifsicle.
 - **Lint** with `pipx run ruff check .` before opening a pull request.
 - **Update [CHANGELOG.md](CHANGELOG.md)** under `Unreleased` for user-facing changes.
 
