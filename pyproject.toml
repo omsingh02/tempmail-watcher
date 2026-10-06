@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tempmail-watcher"
+dynamic = ["version"]
+description = "Zero-dependency CLI that creates a disposable inbox, waits for verification emails, and copies the OTP or confirmation link to your clipboard."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [{ name = "Om Singh" }]
+keywords = ["temporary-email", "disposable-email", "otp", "email-verification", "cli", "testing", "guerrillamail", "mailtm"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Communications :: Email",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Utilities",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/omsingh02/tempmail-watcher"
+Issues = "https://github.com/omsingh02/tempmail-watcher/issues"
+Changelog = "https://github.com/omsingh02/tempmail-watcher/blob/main/CHANGELOG.md"
+
+[project.scripts]
+tempmail = "tempmail:main"
+
+[tool.setuptools]
+py-modules = ["tempmail"]
+
+[tool.setuptools.dynamic]
+version = { attr = "tempmail.VERSION" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+target-version = "py310"
+
+[tool.ruff.lint]
+# Pinned so new Ruff releases with wider defaults don't break CI: pyflakes, pycodestyle errors, bugbear
+select = ["E4", "E7", "E9", "F", "B"]

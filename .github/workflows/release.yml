@@ -1,0 +1,36 @@
+name: Release
+
+# Builds the sdist and wheel from a clean checkout and attaches them to a published GitHub release
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+      - name: Check the tag matches the version
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          version=$(python -c "import tempmail; print(tempmail.VERSION)")
+          if [ "$TAG" != "v$version" ]; then
+            echo "::error::Tag $TAG does not match tempmail.VERSION ($version)"
+            exit 1
+          fi
+      - name: Build
+        run: |
+          python -m pip install build
+          python -m build
+      - name: Attach to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$TAG" dist/* --clobber
