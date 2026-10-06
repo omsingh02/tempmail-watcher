@@ -47,11 +47,73 @@ jobs:
           tempmail --version
           tempmail --help
 
+  # Real clipboards and notifications instead of mocks (tests/test_integration.py)
+  integration:
+    name: integration (${{ matrix.name }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: linux-x11, os: ubuntu-latest }
+          - { name: linux-wayland, os: ubuntu-latest }
+          - { name: macos, os: macos-latest }
+          - { name: windows, os: windows-latest }
+    env:
+      TEMPMAIL_INTEGRATION: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+      - name: Install pytest
+        run: python -m pip install pytest
+      - name: Test (X11 under Xvfb, notifications via dunst)
+        if: matrix.name == 'linux-x11'
+        run: |
+          sudo apt-get update -q && sudo apt-get install -yq xclip xvfb libnotify-bin dunst
+          xvfb-run -a dbus-run-session -- sh -c \
+            'dunst > dunst.log 2>&1 & sleep 1; python -m pytest -v tests/test_integration.py'
+      - name: Test (Wayland under headless sway)
+        if: matrix.name == 'linux-wayland'
+        run: |
+          sudo apt-get update -q && sudo apt-get install -yq sway wl-clipboard
+          export XDG_RUNTIME_DIR="$(mktemp -d)"
+          WLR_BACKENDS=headless WLR_HEADLESS_OUTPUTS=1 WLR_LIBINPUT_NO_DEVICES=1 WLR_RENDERER=pixman \
+            sway -c /dev/null > sway.log 2>&1 &
+          for _ in $(seq 100); do
+            socket=$(find "$XDG_RUNTIME_DIR" -maxdepth 1 -name 'wayland-*' -type s | head -n 1)
+            [ -n "$socket" ] && break
+            sleep 0.1
+          done
+          if [ -z "$socket" ]; then cat sway.log; exit 1; fi
+          export WAYLAND_DISPLAY="$(basename "$socket")"
+          unset DISPLAY
+          python -m pytest -v tests/test_integration.py
+      - name: Test
+        if: matrix.name == 'macos' || matrix.name == 'windows'
+        run: python -m pytest -v tests/test_integration.py
+
+  integration-wsl:
+    name: integration (wsl)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: Vampire/setup-wsl@v7
+        with:
+          additional-packages: python3 python3-pytest
+      - name: Unit and integration tests inside WSL
+        shell: wsl-bash {0}
+        env:
+          TEMPMAIL_INTEGRATION: "1"
+          WSLENV: TEMPMAIL_INTEGRATION
+        run: python3 -m pytest -v -p no:cacheprovider
+
   # Single required check for branch protection, so the matrix can change freely
   ci-passed:
     name: CI passed
     if: always()
-    needs: [lint, test]
+    needs: [lint, test, integration, integration-wsl]
     runs-on: ubuntu-latest
     steps:
       - name: Check job results
