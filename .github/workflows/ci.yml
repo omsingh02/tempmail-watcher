@@ -68,11 +68,12 @@ jobs:
           python-version: "3.14"
       - name: Install pytest
         run: python -m pip install pytest
-      - name: Test (X11 under Xvfb)
+      - name: Test (X11 under Xvfb, notifications via dunst)
         if: matrix.name == 'linux-x11'
         run: |
-          sudo apt-get update -q && sudo apt-get install -yq xclip xvfb
-          xvfb-run -a python -m pytest -v tests/test_integration.py
+          sudo apt-get update -q && sudo apt-get install -yq xclip xvfb libnotify-bin dunst
+          xvfb-run -a dbus-run-session -- sh -c \
+            'dunst > dunst.log 2>&1 & sleep 1; python -m pytest -v tests/test_integration.py'
       - name: Test (Wayland under headless sway)
         if: matrix.name == 'linux-wayland'
         run: |
