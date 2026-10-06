@@ -1,0 +1,97 @@
+<!doctype html>
+<!--
+  Source of social-preview.png (GitHub's repository social preview, 1280x640).
+  Regenerate with:
+    chromium --headless --hide-scrollbars --force-device-scale-factor=1 --window-size=1280,640 \
+      --screenshot=.github/assets/social-preview.png .github/assets/social-preview.html
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1280px; height: 640px; overflow: hidden; }
+  body {
+    font-family: "Inter", "DejaVu Sans", sans-serif;
+    color: #e6edf3;
+    background:
+      radial-gradient(900px 500px at 92% 110%, rgba(57, 197, 207, 0.22), transparent 60%),
+      radial-gradient(700px 420px at -5% -15%, rgba(188, 140, 255, 0.25), transparent 60%),
+      #0d1117;
+    display: flex;
+    align-items: center;
+    gap: 48px;
+    padding: 0 68px;
+  }
+  .text { flex: 1 1 0; min-width: 0; }
+  .eyebrow {
+    font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", "DejaVu Sans Mono", monospace;
+    font-size: 22px; color: #39c5cf; letter-spacing: 0.02em; margin-bottom: 18px;
+  }
+  h1 {
+    font-family: "Inter Display", "Inter", sans-serif;
+    font-size: 63px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; white-space: nowrap;
+    background: linear-gradient(90deg, #f0f6fc 0%, #d2a8ff 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .tagline { font-size: 30px; line-height: 1.35; color: #9ea7b3; margin-top: 22px; }
+  .tagline strong { color: #e6edf3; font-weight: 600; }
+  .chips { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
+  .chip {
+    font-size: 19px; font-weight: 600; color: #c9d1d9;
+    padding: 9px 16px; border-radius: 999px;
+    background: rgba(110, 118, 129, 0.16); border: 1px solid rgba(240, 246, 252, 0.12);
+  }
+  .chip.accent { color: #7ee787; border-color: rgba(126, 231, 135, 0.35); background: rgba(46, 160, 67, 0.12); }
+
+  .terminal {
+    flex: 0 0 500px;
+    border-radius: 16px; overflow: hidden;
+    background: #161b22; border: 1px solid #30363d;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(57, 197, 207, 0.08);
+  }
+  .bar { display: flex; gap: 9px; align-items: center; padding: 16px 18px; background: #1c2128; border-bottom: 1px solid #30363d; }
+  .dot { width: 13px; height: 13px; border-radius: 50%; }
+  .bar .title { margin-left: 12px; font-size: 16px; color: #7d8590; font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; }
+  pre {
+    font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", "DejaVu Sans Mono", monospace;
+    font-size: 21px; line-height: 1.75; padding: 22px 26px 26px; color: #c9d1d9;
+  }
+  .prompt { color: #7ee787; }
+  .key { color: #7d8590; }
+  .email { color: #79c0ff; }
+  .otp { color: #f0f6fc; font-weight: 700; }
+  .copied {
+    font-family: "Inter", sans-serif; font-size: 15px; font-weight: 700; color: #0d1117;
+    background: #7ee787; padding: 3px 10px; border-radius: 6px; margin-left: 10px; vertical-align: 2px;
+  }
+  .cursor { display: inline-block; width: 11px; height: 23px; background: #c9d1d9; vertical-align: -4px; }
+</style>
+</head>
+<body>
+  <div class="text">
+    <div class="eyebrow">$ pipx install tempmail-watcher</div>
+    <h1>tempmail-watcher</h1>
+    <p class="tagline">Disposable inbox in one command.<br><strong>OTP codes and confirmation links</strong><br>land straight in your clipboard.</p>
+    <div class="chips">
+      <span class="chip accent">Zero dependencies</span>
+      <span class="chip">Python 3.10+</span>
+      <span class="chip">Linux · macOS · Windows · WSL</span>
+    </div>
+  </div>
+  <div class="terminal">
+    <div class="bar">
+      <span class="dot" style="background:#ff5f57"></span>
+      <span class="dot" style="background:#febc2e"></span>
+      <span class="dot" style="background:#28c840"></span>
+      <span class="title">~ tempmail --raw</span>
+    </div>
+<pre><span class="prompt">$</span> tempmail --raw
+<span class="key">EMAIL:</span> <span class="email">kq7x2m@sharklasers.com</span>
+<span class="key">OTP:</span> <span class="otp">482913</span><span class="copied">✓ COPIED</span>
+<span class="key">FROM:</span> noreply@example.com
+<span class="key">SUBJECT:</span> Your verification code
+<span class="prompt">$</span> <span class="cursor"></span></pre>
+  </div>
+</body>
+</html>

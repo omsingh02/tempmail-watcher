@@ -1,24 +1,33 @@
 name: Release
 
-# Builds the sdist and wheel from a clean checkout and attaches them to a published GitHub release
+# Builds the sdist and wheel from a clean checkout of the release tag, attaches them to the
+# GitHub release, and publishes them to PyPI with trusted publishing (no API tokens stored)
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to publish, e.g. v1.2.0
+        required: true
 
 permissions:
-  contents: write
+  contents: read
+
+env:
+  TAG: ${{ github.event.release.tag_name || inputs.tag }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.TAG }}
       - uses: actions/setup-python@v7
         with:
           python-version: "3.x"
       - name: Check the tag matches the version
-        env:
-          TAG: ${{ github.event.release.tag_name }}
         run: |
           version=$(python -c "import tempmail; print(tempmail.VERSION)")
           if [ "$TAG" != "v$version" ]; then
@@ -29,8 +38,37 @@ jobs:
         run: |
           python -m pip install build
           python -m build
-      - name: Attach to release
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+  github-release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+      - name: Attach to the GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ github.event.release.tag_name }}
-        run: gh release upload "$TAG" dist/* --clobber
+        run: gh release upload "$TAG" dist/* --clobber --repo "$GITHUB_REPOSITORY"
+
+  pypi:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/tempmail-watcher/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
