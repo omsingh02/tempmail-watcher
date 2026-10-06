@@ -1175,7 +1175,7 @@ Exit status: 0 on success, 1 on error, 2 on bad arguments,
                 mins, secs = divmod(int(elapsed), 60)
                 spin = spinner[spinner_idx % len(spinner)]
                 spinner_idx += 1
-                sys.stdout.write(f"\r  {UI.CYAN}{spin}{UI.RESET} Checking inbox... {UI.DIM}[{mins:02d}:{secs:02d} elapsed, {check_count} checks]{UI.RESET}   ")
+                sys.stdout.write(f"\r  {UI.CYAN}{spin}{UI.RESET} Checking inbox... {UI.DIM}[{mins:02d}:{secs:02d} elapsed, {check_count} check{'' if check_count == 1 else 's'}]{UI.RESET}   ")
                 sys.stdout.flush()
 
             # Poll for messages
